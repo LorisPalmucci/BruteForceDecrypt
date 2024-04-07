@@ -1,23 +1,40 @@
 package BruteForce;
 
 import java.lang.Math;
+import java.util.Arrays;
+
 public class BFDecrypt {
 
+    //combinazioni massime calcolate dal numero di digit della combinazione della cassaforte
     private int maxCombination;
 
+    //combinazioni attuali analizzate
     private int nCombination;
 
-    private int combination;
+    //combinazione memorizzata della cassaforte
+    private String combination;
 
+    //n° di digit della cassaforte
     private int A, B, C, D;
 
+    //stato di blocco della cassaforte
     private boolean lock;
 
-    private String s, resolver;
+    //stringa che costruisce la combinazione da analizzare
+    private String[] resolver;
 
-    public BFDecrypt(int digit, int comb){
+    /**
+     * Costruttore che inizializza o parametri della csassaforte
+     *
+     * @param digit
+     *          numero che rappresenta una parte della combinazione
+     * @param comb
+     *          valore che prende in input il valore della combinazione da scoprire
+     */
+    public BFDecrypt(int digit, String comb){
         this.maxCombination = (int) Math.pow(10, digit);
-        this.resolver = "";
+        this.resolver = new String[digit];
+        Arrays.fill(this.resolver, "0");
         this.nCombination = 0;
         this.combination = comb;
         this.lock = true;
@@ -25,36 +42,25 @@ public class BFDecrypt {
         this.B = 0;
         this.C = 0;
         this.D = 0;
-        this.s = String.valueOf(this.combination);
     }
 
-    public int checkCombination(){
-
-        for (int i = 0; i <= maxCombination; i++) {
-            this.D = i;
-            if (!lock || (this.nCombination == maxCombination)) {
-                break;
-            }
-            else this.nCombination++;
-            resolveCombination();
-            if (this.D == 9){
-                this.C++;
-            }
-            if (this.C == 9){
-                this.B++;
-            }
-            if (this.B == 9){
-                this.A++;
-            }
-
+    public void checkCombination(){
+        while (this.lock){
+            this.nCombination++;
+            this.resolveCombination();
         }
-        return 0;
     }
     public void resolveCombination(){
-        this.resolver = String.valueOf((A) + (B) + (C) + (D));
-        if (s.equals(resolver))
+        if (this.combination.equals(fill(this.nCombination)))
             this.lock = false;
         System.out.println("La combinazione è " + resolver + ", trovata dopo n " + this.nCombination + " tentativi. Stato della cassaforte: " + this.lock);
+    }
 
+    private String[] fill(int n){
+        String convertCombination = String.valueOf(n);
+        for (int i = this.resolver.length; i < 0 ; i--) {
+            this.resolver[i] = convertCombination;
+        }
+        return resolver;
     }
 }
